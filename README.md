@@ -351,5 +351,3 @@ All screenshots are stored in the `screenshots/` directory.
 * Deploy using Docker for scalability
 
 ---
-
-This system provides a strong foundation for handling multimodal engineering documents and can be extended further for production-grade deployment.
