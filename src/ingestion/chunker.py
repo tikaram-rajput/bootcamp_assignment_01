@@ -11,9 +11,9 @@ def chunk_text(documents):
     chunks = []
 
     for doc in documents:
-        split_docs = splitter.split_text(doc["content"])
+        splits = splitter.split_text(doc["content"])
 
-        for chunk in split_docs:
+        for chunk in splits:
             chunks.append({
                 "content": chunk,
                 "page": doc["page"],

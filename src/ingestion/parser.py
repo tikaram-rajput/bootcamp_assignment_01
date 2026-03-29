@@ -1,15 +1,17 @@
-import fitz  # PyMuPDF
+import fitz
 
 def parse_pdf(file_path):
+
     doc = fitz.open(file_path)
 
     text_data = []
+    table_data = []
     image_data = []
 
     for page_num, page in enumerate(doc):
 
-        # Extract text
         text = page.get_text()
+
         if text.strip():
             text_data.append({
                 "content": text,
@@ -17,7 +19,14 @@ def parse_pdf(file_path):
                 "type": "text"
             })
 
-        # Extract images
+        # Simple table detection
+        if "Table" in text or "|" in text:
+            table_data.append({
+                "content": text,
+                "page": page_num,
+                "type": "table"
+            })
+
         images = page.get_images(full=True)
 
         for img in images:
@@ -30,4 +39,4 @@ def parse_pdf(file_path):
                 "type": "image"
             })
 
-    return text_data, image_data
+    return text_data, table_data, image_data

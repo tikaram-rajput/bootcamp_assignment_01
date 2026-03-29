@@ -2,9 +2,13 @@ pymupdf
 fastapi
 uvicorn
 sentence-transformers
+fastapi
+uvicorn
+pymupdf
 chromadb
+sentence-transformers
 python-dotenv
-pydantic
 langchain
 langchain-community
 langchain-text-splitters
+google-generativeai
