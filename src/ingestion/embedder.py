@@ -1,6 +1,6 @@
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
-from config.config import EMBEDDING_MODEL, CHROMA_DB_PATH
+from config.config import CHROMA_DB_PATH
 
 def build_vectorstore(chunks):
 
@@ -15,7 +15,7 @@ def build_vectorstore(chunks):
     ]
 
     embeddings = SentenceTransformerEmbeddings(
-        model_name=EMBEDDING_MODEL
+        model_name="all-MiniLM-L6-v2"
     )
 
     vectorstore = Chroma.from_texts(
@@ -24,5 +24,7 @@ def build_vectorstore(chunks):
         metadatas=metadatas,
         persist_directory=CHROMA_DB_PATH
     )
+
+    vectorstore.persist()
 
     return vectorstore

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CHROMA_DB_PATH = "chroma_db"
-UPLOAD_PATH = "sample_documents/temp.pdf"
+UPLOAD_PATH = "temp.pdf"
 
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50

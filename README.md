@@ -1,3 +1,24 @@
+<div style="display:flex; justify-content:flex-end; margin:8px 0;">
+  <div style="display:inline-flex; align-items:center; gap:10px;
+              border:1px solid #c8952a55; border-radius:10px;
+              padding:7px 14px 7px 8px; background:#fff;">
+    <div style="width:34px;height:34px;border-radius:7px;background:#0b1a35;
+                display:flex;align-items:center;justify-content:center;
+                font-size:12px;font-weight:700;color:#c8952a;
+                border:1px solid #c8952a44;font-family:monospace;">TK</div>
+    <div>
+      <div style="font-size:13px;font-weight:600;color:#111;">Tikaram</div>
+      <div style="font-size:11px;color:#888;font-family:monospace;">2024TM05053</div>
+    </div>
+    <div style="width:1px;height:26px;background:#ddd;"></div>
+    <div style="font-size:11px;color:#555;line-height:1.5;">
+      M.Tech <strong>AIML</strong> · Sem 3<br>
+      BITS Pilani <strong>WILP</strong>
+    </div>
+  </div>
+</div>
+
+
 # bootcamp_assignment_01
 ## Multimodal RAG System with FastAPI
 
