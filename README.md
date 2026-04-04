@@ -81,9 +81,6 @@ This will reduce time spent on manual searching and improve accuracy in diagnost
 This system is designed with a focus on practical usability, cost efficiency, and ease of deployment, while still supporting multimodal capabilities required for automotive engineering documents.
 
 ---
-----
------
----
 
 ## 7. Architecture Overview
 
@@ -93,15 +90,15 @@ The system follows a modular Multimodal RAG architecture with two primary pipeli
 
 When a PDF document is uploaded, it is parsed into three types of content:
 
-* Text
-* Tables
-* Images
+* Text  
+* Tables  
+* Images  
 
 Each type is processed separately:
 
-* Text is split into smaller chunks using recursive chunking
-* Tables are converted into structured textual representations
-* Images are passed through a vision-language model to generate descriptive summaries
+* Text is split into smaller chunks using recursive chunking  
+* Tables are converted into structured textual representations  
+* Images are passed through a vision-language model to generate descriptive summaries  
 
 All processed content is converted into vector embeddings and stored in a vector database along with metadata such as page number and content type.
 
@@ -109,11 +106,11 @@ All processed content is converted into vector embeddings and stored in a vector
 
 When a user submits a query:
 
-1. The query is converted into an embedding
-2. Relevant chunks are retrieved using similarity search
-3. Retrieved context is passed to the LLM
-4. The LLM generates a response grounded in the retrieved content
-5. The system returns the answer along with source references
+1. The query is converted into an embedding  
+2. Relevant chunks are retrieved using similarity search  
+3. Retrieved context is passed to the LLM  
+4. The LLM generates a response grounded in the retrieved content  
+5. The system returns the answer along with source references  
 
 ### Architecture Diagram
 
@@ -139,66 +136,47 @@ flowchart LR
     M --> J
     M --> N[Context]
 
-    N --> O[LLM]
+    N --> O[LLM (HF Multi-Model)]
     O --> P[Answer with Sources]
-```
-
----
 
 ## 8. Technology Choices
 
-### Document Parser — PyMuPDF
+Document Parser — PyMuPDF
 
-PyMuPDF was chosen because it provides direct and reliable extraction of text and images from PDF documents. It allows better control over parsing compared to higher-level frameworks and works efficiently for structured engineering manuals.
+PyMuPDF was chosen because it provides direct and reliable extraction of text and images from PDF documents.
 
----
+Embedding Model — Sentence Transformers (all-MiniLM-L6-v2)
 
-### Embedding Model — Sentence Transformers (all-MiniLM-L6-v2)
+A local embedding model provides efficient semantic search for technical content.
 
-A local embedding model was selected to avoid API costs and improve performance. The chosen model provides good semantic understanding for technical content while being fast enough for large documents.
+Vector Store — ChromaDB
 
----
+ChromaDB is used for storing embeddings along with metadata like page number and content type.
 
-### Vector Store — ChromaDB
+LLM — Hugging Face Inference API (Multi-Model)
 
-ChromaDB was selected due to its simplicity and built-in support for metadata filtering. It allows storing embeddings along with additional information like page number and content type, which is important for returning source references.
+The system uses Hugging Face Inference API with two free models:
 
----
+Primary Model: google/flan-t5-base
+Secondary Model: bigscience/bloomz-560m
 
-### LLM — Gemini / OpenRouter (Configurable)
+If the primary model fails, the system automatically falls back to the secondary model. This improves robustness and ensures reliable response generation.
 
-An external LLM is used for response generation to ensure strong reasoning capabilities. The system is designed to be flexible so that different models can be used without changing the core pipeline.
+Vision Model — Hugging Face BLIP
 
----
+Salesforce/blip-image-captioning-base is used to generate summaries from images, enabling multimodal retrieval.
 
-### Vision Model — Gemini Vision
+Framework — Lightweight Custom + LangChain Utilities
 
-A vision-language model is used to convert diagrams into textual summaries. This ensures that image content becomes searchable and can be used during retrieval.
+A modular pipeline ensures flexibility and maintainability.
 
----
+API Layer — FastAPI
 
-### Framework — Lightweight Custom + LangChain Utilities
-
-A lightweight custom pipeline is used along with selected LangChain utilities. This avoids unnecessary complexity and keeps the system modular and easy to maintain.
-
----
-
-### API Layer — FastAPI
-
-FastAPI was chosen for its speed and simplicity. It provides automatic API documentation and integrates well with validation frameworks, making it suitable for production-style applications.
-
----
-
+FastAPI provides fast API development with built-in documentation support.
 ## 9. Setup Instructions
 
 ### 1. Clone Repository
 
-```bash
-git clone https://github.com/your-username/multimodal-rag-engine-system.git
-cd multimodal-rag-engine-system
-```
-
----
 
 ### 2. Create Virtual Environment
 
@@ -221,11 +199,12 @@ pip install -r requirements.txt
 
 Create a `.env` file using `.env.example`
 
-Example:
+HF_TOKEN=your_huggingface_token_here
 
-```
-LLM_API_KEY=your_api_key_here
-VISION_API_KEY=your_api_key_here
+HF_MODEL_1=google/flan-t5-base
+HF_MODEL_2=bigscience/bloomz-560m
+
+HF_VISION_MODEL=Salesforce/blip-image-captioning-base
 ```
 
 ---
@@ -371,46 +350,43 @@ All screenshots are stored in the `screenshots/` directory.
 * Add authentication and rate limiting
 * Deploy using Docker for scalability
 
----
-## 🏗️ Architecture Overview
-
+##  Architecture Overview
 ```mermaid
-flowchart TD
 
     A[User Upload PDF] --> B[FastAPI /ingest]
 
-    B --> C[PDF Parser (PyMuPDF)]
+    B --> C[PDF Parser - PyMuPDF]
     
     C --> D1[Text Extraction]
     C --> D2[Table Extraction]
     C --> D3[Image Extraction]
 
-    D3 --> E[Vision Model (Qwen VLM)]
+    D3 --> E[Vision Model - HF BLIP]
     E --> F[Image Summary]
 
     D1 --> G[Chunking]
     D2 --> G
     F --> G
 
-    G --> H[Embedding Model (MiniLM)]
-    H --> I[Vector DB (ChromaDB)]
+    G --> H[Embedding Model - MiniLM]
+    H --> I[Vector DB - ChromaDB]
 
     J[User Query] --> K[FastAPI /query]
-    K --> L[Retriever (Top-K Search)]
+    K --> L[Retriever - Top K Search]
     L --> I
 
     I --> L
     L --> M[Relevant Chunks]
 
-    M --> N[LLM (Qwen)]
+    M --> N[LLM - HF Multi Model]
     N --> O[Final Answer + Sources]
 
     O --> P[User Response]
+### 🔍 Key Features
 
-    ### 🔍 Key Features
-
-- Supports **true multimodal retrieval** (text, tables, images)
-- Uses **Vision-Language Model (Qwen)** for image understanding
-- Implements **metadata-aware retrieval** (page, source, type)
-- Provides **grounded answers with references**
+- Supports **true multimodal retrieval** (text, tables, images)  
+- Uses **HuggingFace BLIP model** for image understanding  
+- Implements **metadata-aware retrieval** (page, source, type)  
+- Uses **multi-model LLM fallback (Flan-T5 + BloomZ)**  
+- Provides **grounded answers with references**  
 - Designed for **automotive engineering documents**
