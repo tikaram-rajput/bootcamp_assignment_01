@@ -352,7 +352,6 @@ All screenshots are stored in the `screenshots/` directory.
 
 ##  Architecture Overview
 ```mermaid
-
     A[User Upload PDF] --> B[FastAPI /ingest]
 
     B --> C[PDF Parser - PyMuPDF]
