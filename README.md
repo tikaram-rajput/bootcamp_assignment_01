@@ -352,8 +352,8 @@ All screenshots are stored in the `screenshots/` directory.
 
 ##  Architecture Overview
 ```mermaid
+flowchart TD
     A[User Upload PDF] --> B[FastAPI /ingest]
-
     B --> C[PDF Parser - PyMuPDF]
     
     C --> D1[Text Extraction]
@@ -381,6 +381,7 @@ All screenshots are stored in the `screenshots/` directory.
     N --> O[Final Answer + Sources]
 
     O --> P[User Response]
+```
 ### 🔍 Key Features
 
 - Supports **true multimodal retrieval** (text, tables, images)  
