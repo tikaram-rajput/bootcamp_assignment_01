@@ -2,13 +2,13 @@
 ╔══════════════════════════════════════════════════════════════════╗
 ║           MULTIMODAL RAG SYSTEM — BITS PILANI WILP               ║
 ╠══════════════════════════════════════════════════════════════════╣
-║  Name        : Tikaram                                           ║
-║  Roll No     : 2024TM05053                                       ║
-║  Programme   : M.Tech (Work Integrated Learning Programme)       ║
-║  Institute   : BITS Pilani                                       ║
-║  Course      : Multimodal Retrieval-Augmented Generation         ║
-║  Assignment  : Multimodal RAG System with FastAPI (Bootcamp-Sem3)║
-╚══════════════════════════════════════════════════════════════════╝
+║  Name        : Tikaram                                            ║
+║  Roll No     : 2024TM05053                                        ║
+║  Programme   : M.Tech (Work Integrated Learning Programme)        ║
+║  Institute   : BITS Pilani                                        ║
+║  Course      : Multimodal Retrieval-Augmented Generation          ║
+║  Assignment  : Multimodal RAG System with FastAPI (Bootcamp-Sem3) ║
+╚══════════════════════════════════════════════════════=════════════╝
 
 System Overview:
     - POST /ingest  → Upload a PDF; extracts text, tables, images
@@ -16,6 +16,7 @@ System Overview:
     - GET  /health  → System status and index statistics
     - GET  /docs    → Auto-generated Swagger/OpenAPI documentation
     - GET  /documents → Breakdown of indexed chunks by type
+    
 """
 
 from fastapi import FastAPI

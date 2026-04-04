@@ -2,10 +2,10 @@ TEP 1: Open VS Code Terminal
 
 👉 In VS Code:
 
-Terminal → New Terminal
-✅ STEP 2: GO TO PROJECT FOLDER
+#Terminal → New Terminal
+#✅ STEP 2: GO TO PROJECT FOLDER
 cd C:\vs_studio_directory\git\bootcamp_assignment_01
-✅ STEP 3: ACTIVATE VIRTUAL ENV
+#✅ STEP 3: ACTIVATE VIRTUAL ENV
 venv\Scripts\activate
 
 👉 You should see:

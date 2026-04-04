@@ -1,37 +1,44 @@
+import requests
 import os
-from openai import OpenAI
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY"),
-)
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+URL = "https://openrouter.ai/api/v1/chat/completions"
 
 
-def generate_answer(query, context):
-
-    if not context:
-        return "No relevant information found."
+def generate_answer(query, docs):
+    context = "\n\n".join([d.page_content for d in docs])
 
     prompt = f"""
-You are an automotive engineering assistant.
+You are an expert automotive engineer assistant.
 
-Answer the question using ONLY the context below.
+Answer ONLY from the given context.
+If answer not found, say "Not found in document".
 
 Context:
 {context}
 
 Question:
 {query}
+
+Answer:
 """
 
     try:
-        response = client.chat.completions.create(
-            model="mistralai/mistral-7b-instruct",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.3,
+        response = requests.post(
+            URL,
+            headers={
+                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "model": "qwen/qwen3.6-plus:free",
+                "messages": [{"role": "user", "content": prompt}]
+            }
         )
 
-        return response.choices[0].message.content
+        data = response.json()
+
+        return data["choices"][0]["message"]["content"]
 
     except Exception as e:
         return f"Error generating answer: {str(e)}"

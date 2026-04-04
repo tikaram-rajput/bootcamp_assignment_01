@@ -372,3 +372,45 @@ All screenshots are stored in the `screenshots/` directory.
 * Deploy using Docker for scalability
 
 ---
+## 🏗️ Architecture Overview
+
+```mermaid
+flowchart TD
+
+    A[User Upload PDF] --> B[FastAPI /ingest]
+
+    B --> C[PDF Parser (PyMuPDF)]
+    
+    C --> D1[Text Extraction]
+    C --> D2[Table Extraction]
+    C --> D3[Image Extraction]
+
+    D3 --> E[Vision Model (Qwen VLM)]
+    E --> F[Image Summary]
+
+    D1 --> G[Chunking]
+    D2 --> G
+    F --> G
+
+    G --> H[Embedding Model (MiniLM)]
+    H --> I[Vector DB (ChromaDB)]
+
+    J[User Query] --> K[FastAPI /query]
+    K --> L[Retriever (Top-K Search)]
+    L --> I
+
+    I --> L
+    L --> M[Relevant Chunks]
+
+    M --> N[LLM (Qwen)]
+    N --> O[Final Answer + Sources]
+
+    O --> P[User Response]
+
+    ### 🔍 Key Features
+
+- Supports **true multimodal retrieval** (text, tables, images)
+- Uses **Vision-Language Model (Qwen)** for image understanding
+- Implements **metadata-aware retrieval** (page, source, type)
+- Provides **grounded answers with references**
+- Designed for **automotive engineering documents**

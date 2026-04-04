@@ -3,3 +3,23 @@ __pycache__/
 *.pyc
 .env
 data/extracted/
+# Python
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+.env
+
+# Data
+uploads/
+chroma_db/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Backup
+*.zip
