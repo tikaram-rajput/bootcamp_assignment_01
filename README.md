@@ -113,32 +113,42 @@ When a user submits a query:
 5. The system returns the answer along with source references  
 
 ### Architecture Diagram
-
 ```mermaid
-flowchart LR
-    A[PDF Upload] --> B[Parser]
-    B --> C[Text]
-    B --> D[Tables]
-    B --> E[Images]
+flowchart TD
 
-    C --> F[Chunking]
-    D --> G[Table to Text]
-    E --> H[VLM Summary]
+    A[User Upload PDF] --> B[FastAPI /ingest]
 
-    F --> I[Embedding]
-    G --> I
-    H --> I
+    B --> C[PDF Parser - PyMuPDF]
+    
+    C --> D1[Text Extraction]
+    C --> D2[Table Extraction]
+    C --> D3[Image Extraction]
 
-    I --> J[Vector Database]
+    D3 --> E[Vision Model - HF BLIP]
+    E --> F[Image Summary]
 
-    K[User Query] --> L[Query Embedding]
-    L --> M[Similarity Search]
-    M --> J
-    M --> N[Context]
+    D1 --> G[Chunking]
+    D2 --> G
+    F --> G
 
-    N --> O[LLM (HF Multi-Model)]
-    O --> P[Answer with Sources]
+    G --> H[Embedding Model - MiniLM]
+    H --> I[Vector DB - ChromaDB]
 
+    J[User Query] --> K[FastAPI /query]
+    K --> L[Retriever - Top K Search]
+    L --> I
+
+    I --> L
+    L --> M[Relevant Chunks]
+
+    M --> N1[LLM 1 - Flan-T5]
+    M --> N2[LLM 2 - BloomZ]
+
+    N1 --> O[Answer Selection]
+    N2 --> O
+
+    O --> P[Final Answer + Sources]
+```
 ## 8. Technology Choices
 
 Document Parser — PyMuPDF
@@ -387,7 +397,7 @@ flowchart TD
 
     O --> P[Final Answer + Sources]
 ```
-### 🔍 Key Features
+### Key Features
 
 - Supports **true multimodal retrieval** (text, tables, images)  
 - Uses **HuggingFace BLIP model** for image understanding  
