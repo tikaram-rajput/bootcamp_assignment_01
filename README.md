@@ -353,7 +353,9 @@ All screenshots are stored in the `screenshots/` directory.
 ##  Architecture Overview
 ```mermaid
 flowchart TD
+
     A[User Upload PDF] --> B[FastAPI /ingest]
+
     B --> C[PDF Parser - PyMuPDF]
     
     C --> D1[Text Extraction]
@@ -377,10 +379,13 @@ flowchart TD
     I --> L
     L --> M[Relevant Chunks]
 
-    M --> N[LLM - HF Multi Model]
-    N --> O[Final Answer + Sources]
+    M --> N1[LLM 1 - Flan-T5]
+    M --> N2[LLM 2 - BloomZ]
 
-    O --> P[User Response]
+    N1 --> O[Answer Selection]
+    N2 --> O
+
+    O --> P[Final Answer + Sources]
 ```
 ### 🔍 Key Features
 
