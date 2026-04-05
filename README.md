@@ -238,7 +238,7 @@ uvicorn main:app --reload
 
 ```bash
 curl -X POST "http://localhost:8000/ingest" \
--F "file=@sample_documents/hino_manual.pdf"
+-F "file=@sample_documents/IC ENGINE BASICS.pdf"
 ```
 
 ---
@@ -248,7 +248,7 @@ curl -X POST "http://localhost:8000/ingest" \
 ```bash
 curl -X POST "http://localhost:8000/query" \
 -H "Content-Type: application/json" \
--d '{"query": "Explain turbocharger working"}'
+-d '{"query": "Explain the engine diagram"}'
 ```
 
 ---
@@ -257,16 +257,16 @@ curl -X POST "http://localhost:8000/query" \
 
 ### GET /health
 
-Returns system status including number of indexed documents and uptime.
+Returns system status including vector database availability and model configuration.
 
 Example Response:
 
 ```json
 {
-  "status": "running",
-  "documents_indexed": 1,
-  "total_chunks": 1200,
-  "uptime": "10 minutes"
+  "status": "ok",
+  "vector_db": "available",
+  "models": "multi-LLM (HF API)",
+  "uptime": "running"
 }
 ```
 
@@ -280,11 +280,11 @@ Example Response:
 
 ```json
 {
-  "message": "Document ingested successfully",
-  "text_chunks": 800,
-  "table_chunks": 150,
-  "image_chunks": 50,
-  "processing_time": "25 seconds"
+  "message": "Ingestion successful",
+  "text_chunks": 334,
+  "table_chunks": 243,
+  "image_chunks": 65,
+  "processing_time_seconds": 119.42
 }
 ```
 
@@ -298,7 +298,7 @@ Example Request:
 
 ```json
 {
-  "query": "What is the torque specification for cylinder head?"
+  "query": "Explain the engine combustion process"
 }
 ```
 
@@ -306,12 +306,20 @@ Example Response:
 
 ```json
 {
-  "answer": "The torque specification is 120 Nm...",
+  "question": "Explain the engine combustion process",
+  "answer": "All models failed to generate response.",
   "sources": [
     {
-      "file": "hino_manual.pdf",
-      "page": 45,
-      "type": "table"
+      "content": "Two stroke of the piston and one revolution of crankshaft",
+      "page": 13,
+      "type": "table",
+      "source": "IC ENGINE BASICS.pdf"
+    },
+    {
+      "content": "Figure: Piston and piston ring assembly...",
+      "page": 6,
+      "type": "text",
+      "source": "IC ENGINE BASICS.pdf"
     }
   ]
 }
@@ -325,7 +333,6 @@ Provides Swagger UI for testing all endpoints.
 
 ---
 
-## 11. Screenshots
 
 ## 11. Screenshots
 
