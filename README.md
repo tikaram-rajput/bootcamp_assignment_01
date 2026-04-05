@@ -5,7 +5,7 @@
     <div style="width:34px;height:34px;border-radius:7px;background:#0b1a35;
                 display:flex;align-items:center;justify-content:center;
                 font-size:12px;font-weight:700;color:#c8952a;
-                border:1px solid #c8952a44;font-family:monospace;">TK</div>
+                border:1px solid #c8952a44;font-family:monospace;">----</div>
     <div>
       <div style="font-size:13px;font-weight:600;color:#111;">Tikaram</div>
       <div style="font-size:11px;color:#888;font-family:monospace;">2024TM05053</div>
@@ -327,16 +327,71 @@ Provides Swagger UI for testing all endpoints.
 
 ## 11. Screenshots
 
-The following screenshots demonstrate the working system:
+## 11. Screenshots
 
-* Swagger UI showing API endpoints
-* Successful document ingestion
-* Query result for text-based retrieval
-* Query result for table-based retrieval
-* Query result for image-based retrieval
-* Health endpoint response
+### 1. Swagger UI — API Documentation
 
-All screenshots are stored in the `screenshots/` directory.
+![Swagger UI](screenshots/swagger_ui.png)
+
+Shows all available endpoints:
+- `/health`
+- `/ingest`
+- `/query`
+
+---
+
+### 2. Successful Ingestion
+
+![Ingestion](screenshots/ingestion.png)
+
+- PDF uploaded successfully
+- Extracted:
+  - Text chunks
+  - Table chunks
+  - Image summaries
+- Stored in vector database
+
+---
+
+### 3. Text Query Result
+
+![Text Query](screenshots/text_query.png)
+
+- Query retrieves **text-based chunks**
+- Example: engine working principle
+- Response includes source references
+
+---
+
+### 4. Table Query Result
+
+![Table Query](screenshots/table_query.png)
+
+- Query retrieves **table data**
+- Example: specifications, parameters
+- Shows structured values from document tables
+
+---
+
+### 5. Image Query Result
+
+![Image Query](screenshots/image_query.png)
+
+- Query retrieves **image summaries**
+- Vision model converts diagrams → text
+- Example: engine diagram explanation
+
+---
+
+### 6. Health Endpoint
+
+![Health](screenshots/health.png)
+
+- System status check
+- Shows:
+  - Vector DB status
+  - Model availability
+  - System uptime
 
 ---
 

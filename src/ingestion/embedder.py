@@ -1,30 +1,30 @@
-from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
-from config.config import CHROMA_DB_PATH
+from langchain_huggingface import HuggingFaceEmbeddings
+
+PERSIST_DIR = "chroma_db"
+
 
 def build_vectorstore(chunks):
+    texts = []
+    metadatas = []
 
-    texts = [c["content"] for c in chunks]
+    for chunk in chunks:
+        texts.append(chunk["content"])
+        metadatas.append({
+            "page": chunk.get("page"),
+            "type": chunk.get("type", "text"),
+            "source": chunk.get("source")
+        })
 
-    metadatas = [
-        {
-            "page": c["page"],
-            "type": c["type"]
-        }
-        for c in chunks
-    ]
-
-    embeddings = SentenceTransformerEmbeddings(
-        model_name="all-MiniLM-L6-v2"
+    embeddings = HuggingFaceEmbeddings(
+        model_name="sentence-transformers/all-MiniLM-L6-v2"
     )
 
     vectorstore = Chroma.from_texts(
         texts=texts,
         embedding=embeddings,
         metadatas=metadatas,
-        persist_directory=CHROMA_DB_PATH
+        persist_directory=PERSIST_DIR
     )
-
-    vectorstore.persist()
 
     return vectorstore

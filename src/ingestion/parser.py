@@ -1,42 +1,56 @@
-import fitz
+import fitz  # PyMuPDF
 
-def parse_pdf(file_path):
 
+def parse_pdf(file_path: str):
     doc = fitz.open(file_path)
 
-    text_data = []
-    table_data = []
-    image_data = []
+    text_chunks = []
+    table_chunks = []
+    image_chunks = []
 
     for page_num, page in enumerate(doc):
+        page_number = page_num + 1
 
-        text = page.get_text()
+        # -------- TEXT EXTRACTION --------
+        text = page.get_text("text")
 
-        if text.strip():
-            text_data.append({
+        if text and len(text.strip()) > 50:
+            text_chunks.append({
                 "content": text,
-                "page": page_num,
+                "page": page_number,
                 "type": "text"
             })
 
-        # Simple table detection
-        if "Table" in text or "|" in text:
-            table_data.append({
-                "content": text,
-                "page": page_num,
-                "type": "table"
-            })
+        # -------- TABLE DETECTION (IMPROVED) --------
+        blocks = page.get_text("blocks")
 
+        for block in blocks:
+            block_text = block[4]
+
+            # heuristic for table-like content
+            if (
+                "|" in block_text or
+                "\t" in block_text or
+                "  " in block_text and len(block_text.split()) > 5
+            ):
+                table_chunks.append({
+                    "content": block_text,
+                    "page": page_number,
+                    "type": "table"
+                })
+
+        # -------- IMAGE EXTRACTION --------
         images = page.get_images(full=True)
 
         for img in images:
             xref = img[0]
             base_image = doc.extract_image(xref)
+            image_bytes = base_image["image"]
 
-            image_data.append({
-                "image": base_image["image"],
-                "page": page_num,
+            image_chunks.append({
+                "image_bytes": image_bytes,
+                "page": page_number,
                 "type": "image"
             })
 
-    return text_data, table_data, image_data
+    return text_chunks, table_chunks, image_chunks

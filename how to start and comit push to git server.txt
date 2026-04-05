@@ -1,5 +1,5 @@
 TEP 1: Open VS Code Terminal
-
+pip install requests python-dotenv
 👉 In VS Code:
 
 #Terminal → New Terminal

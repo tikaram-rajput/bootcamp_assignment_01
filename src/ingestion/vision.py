@@ -1,39 +1,26 @@
-import base64
-import requests
 import os
+import requests
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+HF_TOKEN = os.getenv("HF_TOKEN")
+MODEL = os.getenv("HF_VISION_MODEL")
 
-URL = "https://openrouter.ai/api/v1/chat/completions"
+HEADERS = {
+    "Authorization": f"Bearer {HF_TOKEN}"
+}
 
 
-def summarize_image(image_bytes: bytes):
-    base64_image = base64.b64encode(image_bytes).decode("utf-8")
+def summarize_image(image_bytes):
+    try:
+        url = f"https://api-inference.huggingface.co/models/{MODEL}"
 
-    response = requests.post(
-        URL,
-        headers={
-            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-            "Content-Type": "application/json"
-        },
-        json={
-            "model": "qwen/qwen3.6-plus:free",
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": "Explain this automotive technical diagram in detail."
-                        },
-                        {
-                            "type": "image_url",
-                            "image_url": f"data:image/png;base64,{base64_image}"
-                        }
-                    ]
-                }
-            ]
-        }
-    )
+        response = requests.post(url, headers=HEADERS, data=image_bytes, timeout=20)
 
-    return response.json()["choices"][0]["message"]["content"]
+        result = response.json()
+
+        if isinstance(result, list):
+            return result[0]["generated_text"]
+
+        return "Image description unavailable"
+
+    except Exception:
+        return "Image processing failed"

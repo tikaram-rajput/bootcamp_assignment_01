@@ -1,18 +1,50 @@
-import requests
 import os
+import requests
 
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
-URL = "https://openrouter.ai/api/v1/chat/completions"
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+MODEL_1 = os.getenv("HF_MODEL_1")
+MODEL_2 = os.getenv("HF_MODEL_2")
+
+HEADERS = {
+    "Authorization": f"Bearer {HF_TOKEN}"
+}
+
+
+def call_model(model, prompt):
+    try:
+        url = f"https://api-inference.huggingface.co/models/{model}"
+
+        payload = {
+            "inputs": prompt,
+            "parameters": {
+                "max_new_tokens": 300
+            }
+        }
+
+        response = requests.post(url, headers=HEADERS, json=payload, timeout=20)
+
+        result = response.json()
+
+        if isinstance(result, list):
+            return result[0]["generated_text"]
+
+        if "error" in result:
+            return None
+
+        return None
+
+    except Exception:
+        return None
 
 
 def generate_answer(query, docs):
-    context = "\n\n".join([d.page_content for d in docs])
+    context = "\n".join([doc.page_content for doc in docs])
 
     prompt = f"""
-You are an expert automotive engineer assistant.
+You are an expert automotive engineer.
 
-Answer ONLY from the given context.
-If answer not found, say "Not found in document".
+Answer ONLY from the context below.
 
 Context:
 {context}
@@ -23,22 +55,16 @@ Question:
 Answer:
 """
 
-    try:
-        response = requests.post(
-            URL,
-            headers={
-                "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "model": "qwen/qwen3.6-plus:free",
-                "messages": [{"role": "user", "content": prompt}]
-            }
-        )
+    # 🔹 Try Model 1
+    answer = call_model(MODEL_1, prompt)
 
-        data = response.json()
+    if answer:
+        return f"[Model: {MODEL_1}]\n{answer}"
 
-        return data["choices"][0]["message"]["content"]
+    # 🔹 Fallback Model 2
+    answer = call_model(MODEL_2, prompt)
 
-    except Exception as e:
-        return f"Error generating answer: {str(e)}"
+    if answer:
+        return f"[Model: {MODEL_2}]\n{answer}"
+
+    return "All models failed to generate response."
